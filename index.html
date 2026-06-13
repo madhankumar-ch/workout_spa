@@ -1,733 +1,843 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crush Your Goals Daily - Fitness Tracker</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Montserrat', sans-serif; }
-        .hero-gradient { background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 50%, #ff6b9d 100%); }
-        .chest-gradient { background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%); }
-        .triceps-gradient { background: linear-gradient(135deg, #ff8e53 0%, #ffa726 100%); }
-        .abs-gradient { background: linear-gradient(135deg, #ff6b9d 0%, #e91e63 100%); }
-        .biceps-gradient { background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); }
-        .back-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-        .shoulders-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
-        .quads-gradient { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
-        .glutes-gradient { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
-        .calves-gradient { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-        .rest-gradient { background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); }
-        .card-hover { transition: all 0.3s ease; }
-        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .pulse-animation { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        .confetti { position: fixed; width: 10px; height: 10px; background: #ff6b6b; }
-        .bounce-in { animation: bounceIn 0.5s ease-out; }
-        @keyframes bounceIn {
-            0% { transform: scale(0.3); opacity: 0; }
-            50% { transform: scale(1.05); }
-            70% { transform: scale(0.9); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .muscle-icon { font-size: 3rem; margin-bottom: 1rem; }
-        @keyframes fall {
-            0% {
-                transform: translateY(-100vh) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        .timer-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 100;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 2rem;
-            border-radius: 1rem;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 99;
-            pointer-events: all;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<title>MADFIT — Lean & Strong</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.20.15/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800;6..12,900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF8F3; --bg2:#F2ECE1; --card:#FFFDFA; --card2:#FBF7F0;
+    --ink:#2A2620; --ink2:#4C463D; --muted:#938B7C; --line:#ECE3D5;
+    --clay:#C96442; --clay-soft:#E79A7B; --clay-deep:#AE4F2E;
+    --amber:#D98E45; --honey:#E2AC6A; --sage:#7F9270; --sage-deep:#5F744F;
+    --sky:#7E96A8;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ margin:0; padding:0; overflow-x:hidden; max-width:100%; }
+  #root{ overflow-x:hidden; width:100%; }
+  body{
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(201,100,66,.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 110%, rgba(127,146,112,.10), transparent 55%),
+      var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  ::-webkit-scrollbar{ width:9px; height:9px; }
+  ::-webkit-scrollbar-thumb{ background:#E0D6C5; border-radius:20px; }
+  .ff{ font-family:'Nunito Sans', sans-serif; }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    box-shadow:0 1px 2px rgba(60,44,28,.05), 0 18px 40px -22px rgba(140,92,58,.28);
+  }
+  .soft{ background:var(--card2); border:1px solid var(--line); border-radius:16px; }
+  .clay-grad{ background:linear-gradient(135deg,#CE6A47 0%,#E08A5B 55%,#DC9447 100%); }
+  .sage-grad{ background:linear-gradient(135deg,#7F9270 0%,#9BAD86 100%); }
+  .amber-grad{ background:linear-gradient(135deg,#D98E45 0%,#E6B574 100%); }
+  .ink-grad{ background:linear-gradient(135deg,#3A332A 0%,#54493B 100%); }
+  .grad-text{ background:linear-gradient(120deg,#C96442,#DC9447); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .tab-btn{ transition:all .2s ease; }
+  .pill{ transition:all .15s ease; }
+  .pill:active{ transform:scale(.94); }
+  .rise{ animation:rise .5s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .pop{ animation:pop .35s cubic-bezier(.2,.8,.2,1.2) both; }
+  @keyframes pop{ 0%{transform:scale(.6); opacity:0;} 60%{transform:scale(1.08);} 100%{transform:scale(1); opacity:1;} }
+  .glow{ animation:glow 2.6s ease-in-out infinite; }
+  @keyframes glow{ 0%,100%{ box-shadow:0 0 0 0 rgba(201,100,66,.0);} 50%{ box-shadow:0 0 26px -6px rgba(201,100,66,.35);} }
+  .conf{ position:fixed; top:-12px; width:9px; height:14px; border-radius:2px; z-index:80; pointer-events:none; }
+  @keyframes fall{ 0%{ transform:translateY(-10vh) rotate(0); opacity:1;} 100%{ transform:translateY(110vh) rotate(540deg); opacity:0;} }
+  .ringtrack{ stroke:#EFE6D7; }
+  .check-anim{ animation:pop .3s ease both; }
+  .timer-back{ position:fixed; inset:0; background:rgba(42,38,32,.42); backdrop-filter:blur(3px); z-index:90; display:flex; align-items:center; justify-content:center; padding:18px; animation:fade .2s ease both; }
+  @keyframes fade{ from{opacity:0;} to{opacity:1;} }
+  .seg{ transition:all .2s ease; }
+  .noise:before{
+    content:""; position:absolute; inset:0; border-radius:inherit; opacity:.5;
+    background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px);
+    background-size:7px 7px; mix-blend-mode:overlay; pointer-events:none;
+  }
+  details>summary{ list-style:none; } details>summary::-webkit-details-marker{ display:none; }
+  /* mobile niceties */
+  .no-zoom{ font-size:16px; }
+  .bottom-safe{ padding-bottom:max(.5rem, env(safe-area-inset-bottom)); }
+  .top-safe{ padding-top:env(safe-area-inset-top); }
+  .pad-nav{ padding-bottom:calc(7rem + env(safe-area-inset-bottom)); }
+  input{ font-size:16px; } /* prevents iOS zoom-on-focus */
+</style>
 </head>
-<body class="bg-gray-900 text-white">
-    <div id="root"></div>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+/* ============================ DATA ============================ */
+const WARMUP = {
+  duration:"6–7 min",
+  items:[
+    "Jumping Jacks — 60s",
+    "High Knees — 45s",
+    "Knee-to-Hand Folds — 30s",
+    "Arm Circles — 30s each way",
+    "Bodyweight Squats — 15 reps",
+    "Standing Torso Twists — 30s (wakes up obliques)",
+    "Inchworm Walkouts — 5 reps"
+  ]
+};
 
-        const workoutPlan = {
-            Monday: {
-                title: "Chest, Triceps, Abs",
-                warmup: "Jumping jacks, arm circles, bodyweight squats (5 min)",
-                muscleGroups: {
-                    Chest: {
-                        icon: "🏋️‍♂️",
-                        gradient: "chest-gradient",
-                        exercises: [
-                            { name: "Dumbbell Chest Flys", sets: 1, reps: 15, rest: "60s", description: "Build powerful chest muscles! Lie on floor, hold dumbbells above chest, lower arms wide, return." },
-                            { name: "Flat Pushups", sets: 1, reps: 15, rest: "60s", description: "Classic strength builder! Keep body straight, lower chest to near floor." },
-                            { name: "Incline Pushups", sets: 1, reps: 15, rest: "60s", description: "Target upper chest! Hands on elevated surface, perform pushups." }
-                        ]
-                    },
-                    Triceps: {
-                        icon: "💪",
-                        gradient: "triceps-gradient",
-                        exercises: [
-                            { name: "Dumbbell Overhead Tricep Extension", sets: 1, reps: 12, rest: "60s", description: "Sculpt those triceps! Hold one dumbbell with both hands overhead, lower behind head, extend." },
-                            { name: "Dumbbell Skull Crusher", sets: 1, reps: 12, rest: "60s", description: "Tricep destroyer! Lie on floor, lower dumbbells toward forehead, extend arms." },
-                            { name: "Tricep Kickback", sets: 1, reps: 12, rest: "60s", description: "Tricep sculptor! Bend forward, extend dumbbells back with elbows fixed." }
-                        ]
-                    },
-                    Abs: {
-                        icon: "🧘‍♂️",
-                        gradient: "abs-gradient",
-                        exercises: [
-                            { name: "Dumbbell Russian Twist", sets: 1, reps: "15/side", rest: "60s", description: "Core rotational power! Sit, lean back slightly, twist torso with dumbbell." },
-                            { name: "Dumbbell Crunch", sets: 1, reps: 15, rest: "60s", description: "Abs of steel! Hold dumbbell on chest, perform crunch." },
-                            { name: "Laying Leg Raises", sets: 1, reps: 15, rest: "60s", description: "Lower ab crusher! Lie flat, raise legs to vertical, lower slowly." }
-                        ]
-                    }
-                },
-                cooldown: "Plank (30s), chest stretch, tricep stretch (5 min)"
-            },
-            Tuesday: {
-                title: "Biceps, Back, Shoulders",
-                warmup: "Arm swings, bodyweight rows (under sturdy table), shoulder rolls (5 min)",
-                muscleGroups: {
-                    Biceps: {
-                        icon: "💪",
-                        gradient: "biceps-gradient",
-                        exercises: [
-                            { name: "Dumbbell Bicep Curl", sets: 1, reps: 15, rest: "60s", description: "Build those peaks! Curl dumbbells with palms up, slow descent." },
-                            { name: "Dumbbell Hammer Curl", sets: 1, reps: 15, rest: "60s", description: "Forearm power! Palms face inward, curl dumbbells." },
-                            { name: "Dumbbell Reverse Curl", sets: 1, reps: 15, rest: "60s", description: "Grip strength builder! Palms down, curl dumbbells." }
-                        ]
-                    },
-                    Back: {
-                        icon: "🏋️‍♂️",
-                        gradient: "back-gradient",
-                        exercises: [
-                            { name: "Dumbbell Bentover Row", sets: 1, reps: 15, rest: "60s", description: "Back strength foundation! Bend at hips, pull dumbbells to waist." },
-                            { name: "Dumbbell Shoulder Extension", sets: 1, reps: 12, rest: "60s", description: "Posterior power! Hold dumbbells behind back, extend arms backward." },
-                            { name: "Dumbbell Pullover", sets: 1, reps: 12, rest: "60s", description: "Upper back strengthener! Lie on floor, lower dumbbell overhead, pull back to chest." }
-                        ]
-                    },
-                    Shoulders: {
-                        icon: "🏋️‍♂️",
-                        gradient: "shoulders-gradient",
-                        exercises: [
-                            { name: "Dumbbell Lateral Raise", sets: 1, reps: 15, rest: "60s", description: "Shoulder width builder! Raise dumbbells to shoulder height, lower slowly." },
-                            { name: "Dumbbell Front Raise", sets: 1, reps: 15, rest: "60s", description: "Front delt power! Raise dumbbells forward to shoulder height." },
-                            { name: "Dumbbell Rear Delt Fly", sets: 1, reps: 15, rest: "60s", description: "Rear delt sculptor! Bend forward, raise dumbbells outward." }
-                        ]
-                    }
-                },
-                cooldown: "Plank (30s), upper back stretch, shoulder stretch (5 min)"
-            },
-            Wednesday: {
-                title: "Chest, Triceps, Abs",
-                warmup: "Jumping jacks, arm circles, light dumbbell swings (5 min)",
-                muscleGroups: {
-                    Chest: {
-                        icon: "🏋️‍♂️",
-                        gradient: "chest-gradient",
-                        exercises: [
-                            { name: "Dumbbell Chest Flys", sets: 1, reps: 15, rest: "60s", description: "Chest expansion master! Lie on floor, lower dumbbells wide, return." },
-                            { name: "Decline Pushups", sets: 1, reps: 15, rest: "60s", description: "Lower chest focus! Feet elevated, perform pushups." },
-                            { name: "Incline Pushups", sets: 1, reps: 15, rest: "60s", description: "Upper chest builder! Hands on elevated surface, perform pushups." }
-                        ]
-                    },
-                    Triceps: {
-                        icon: "💪",
-                        gradient: "triceps-gradient",
-                        exercises: [
-                            { name: "Bench Dips", sets: 1, reps: 12, rest: "60s", description: "Tricep strength builder! Use sturdy chair, lower body with elbows bending." },
-                            { name: "Dumbbell Overhead Tricep Extension", sets: 1, reps: 12, rest: "60s", description: "Tricep isolation! Hold one dumbbell overhead, lower behind head." },
-                            { name: "Tricep Kickback", sets: 1, reps: 12, rest: "60s", description: "Tricep sculptor! Bend forward, extend dumbbells back with elbows fixed." }
-                        ]
-                    },
-                    Abs: {
-                        icon: "🧘‍♂️",
-                        gradient: "abs-gradient",
-                        exercises: [
-                            { name: "Dumbbell Wood Chopper", sets: 1, reps: "15/side", rest: "60s", description: "Functional core power! Hold dumbbell, twist from high to low across body." },
-                            { name: "Dumbbell Side Bend", sets: 1, reps: "15/side", rest: "60s", description: "Oblique sculptor! Hold dumbbell in one hand, bend sideways." },
-                            { name: "Mountain Climber", sets: 1, reps: "15/side", rest: "60s", description: "Cardio core crusher! In plank, alternate knee-to-chest rapidly." }
-                        ]
-                    }
-                },
-                cooldown: "Plank (30s), chest stretch, cat-cow stretch (5 min)"
-            },
-            Thursday: {
-                title: "Quadriceps, Glutes, Calves",
-                warmup: "Bodyweight squats, leg swings, high knees (5 min)",
-                muscleGroups: {
-                    Quadriceps: {
-                        icon: "🦵",
-                        gradient: "quads-gradient",
-                        exercises: [
-                            { name: "Dumbbell Squat", sets: 1, reps: 15, rest: "60s", description: "Leg foundation builder! Hold dumbbells at sides, squat to knee level." },
-                            { name: "Dumbbell Forward Lunges", sets: 1, reps: "12/leg", rest: "60s", description: "Unilateral leg power! Step forward, lunge with dumbbells." },
-                            { name: "Dumbbell Lateral Lunges", sets: 1, reps: "12/leg", rest: "60s", description: "Side leg strength! Step sideways, lunge with dumbbells." }
-                        ]
-                    },
-                    Glutes: {
-                        icon: "🍑",
-                        gradient: "glutes-gradient",
-                        exercises: [
-                            { name: "Dumbbell Glute Bridge", sets: 1, reps: 15, rest: "60s", description: "Glute activation master! Lie on back, knees bent, lift hips with dumbbells on pelvis." },
-                            { name: "Dumbbell Single-Leg Glute Bridge", sets: 1, reps: "12/leg", rest: "60s", description: "Unilateral glute power! Lift hips with one leg extended." },
-                            { name: "Dumbbell Hip Thrust", sets: 1, reps: 15, rest: "60s", description: "Maximum glute activation! Sit on floor, back against bench, lift hips with dumbbells." }
-                        ]
-                    },
-                    Calves: {
-                        icon: "🦶",
-                        gradient: "calves-gradient",
-                        exercises: [
-                            { name: "Dumbbell Calf Raises", sets: 1, reps: 15, rest: "60s", description: "Calf power builder! Hold dumbbells, raise heels off ground." },
-                            { name: "Walking Calf Raises", sets: 1, reps: "15/leg", rest: "60s", description: "Dynamic calf strength! Step forward, raise heel each step." },
-                            { name: "Tip Toe Walking", sets: 1, reps: "30s", rest: "60s", description: "Calf endurance challenge! Walk on toes with dumbbells in hands." }
-                        ]
-                    }
-                },
-                cooldown: "Plank (30s), quad stretch, calf stretch (5 min)"
-            },
-            Friday: {
-                title: "Biceps, Back, Abs",
-                warmup: "Arm swings, bodyweight rows, high knees (5 min)",
-                muscleGroups: {
-                    Biceps: {
-                        icon: "💪",
-                        gradient: "biceps-gradient",
-                        exercises: [
-                            { name: "Dumbbell Bicep Curl", sets: 1, reps: 15, rest: "60s", description: "Bicep peak builder! Curl dumbbells with palms up." },
-                            { name: "Dumbbell Hammer Curl", sets: 1, reps: 15, rest: "60s", description: "Forearm developer! Palms inward, curl dumbbells." },
-                            { name: "Dumbbell Reverse Curl", sets: 1, reps: 15, rest: "60s", description: "Grip strength enhancer! Palms down, curl dumbbells." }
-                        ]
-                    },
-                    Back: {
-                        icon: "🏋️‍♂️",
-                        gradient: "back-gradient",
-                        exercises: [
-                            { name: "Dumbbell Bentover Row", sets: 1, reps: 15, rest: "60s", description: "Back width builder! Bend at hips, pull dumbbells to waist." },
-                            { name: "Dumbbell Dead Lift", sets: 1, reps: 12, rest: "60s", description: "Full posterior chain! Hold dumbbells, hinge at hips, lower weights to shins." },
-                            { name: "Dumbbell Pullover", sets: 1, reps: 12, rest: "60s", description: "Upper back strengthener! Lie on floor, lower dumbbell overhead, pull back to chest." }
-                        ]
-                    },
-                    Abs: {
-                        icon: "🧘‍♂️",
-                        gradient: "abs-gradient",
-                        exercises: [
-                            { name: "Dumbbell Russian Twist", sets: 1, reps: "15/side", rest: "60s", description: "Core rotation power! Sit, twist torso with dumbbell." },
-                            { name: "Crunches", sets: 1, reps: 15, rest: "60s", description: "Classic ab builder! Standard crunch, focus on abs." },
-                            { name: "Dumbbell Side Bend", sets: 1, reps: "15/side", rest: "60s", description: "Oblique strengthener! Hold dumbbell, bend sideways." }
-                        ]
-                    }
-                },
-                cooldown: "Plank (30s), upper back stretch, wrist stretch (5 min)"
-            },
-            Saturday: {
-                title: "Rest Day",
-                warmup: "Light stretching and mobility work",
-                muscleGroups: {
-                    "Active Recovery": {
-                        icon: "🧘",
-                        gradient: "rest-gradient",
-                        exercises: [
-                            { name: "Active Recovery", sets: 1, reps: "As needed", rest: "N/A", description: "Rest and recover! Light walks, stretching, or gentle yoga." }
-                        ]
-                    }
-                },
-                cooldown: "Full body stretch and relaxation"
-            },
-            Sunday: {
-                title: "Rest Day",
-                warmup: "Light stretching and mobility work",
-                muscleGroups: {
-                    "Active Recovery": {
-                        icon: "🧘",
-                        gradient: "rest-gradient",
-                        exercises: [
-                            { name: "Active Recovery", sets: 1, reps: "As needed", rest: "N/A", description: "Rest and recover! Light walks, stretching, or gentle yoga." }
-                        ]
-                    }
-                },
-                cooldown: "Full body stretch and relaxation"
-            }
-        };
+const ex = (name, detail, rest, desc) => ({ name, detail, rest, desc });
 
-        const motivationalQuotes = [
-            "The only bad workout is the one that didn't happen!",
-            "Push yourself because no one else is going to do it for you!",
-            "Your body can do it. It's your mind you have to convince!",
-            "Don't wish for it, work for it!",
-            "Progress, not perfection!",
-            "Champions keep playing until they get it right!",
-            "The pain you feel today will be the strength you feel tomorrow!",
-            "Success isn't given. It's earned!",
-            "Your only limit is you!",
-            "Make it happen!"
-        ];
+const PROGRAM = {
+  Monday:{
+    type:"strength", icon:"🔥", focus:"Full-Body Strength · Push",
+    tag:"Strength A", duration:"≈ 60 min",
+    blurb:"Builds muscle that keeps your metabolism high. Supersets keep your heart rate up so you burn while you lift.",
+    blocks:[
+      { name:"Block A · Lower + Push", meta:"3 rounds · rest 45–60s", exercises:[
+        ex("Goblet Squat","3 × 15","60s","Hold 1 dumbbell at chest, sit back to parallel, drive up through heels."),
+        ex("Push-ups","3 × 12–15","60s","Body in a straight line, lower chest near floor, full lockout up."),
+      ]},
+      { name:"Block B · Push + Pull", meta:"3 rounds · rest 45–60s", exercises:[
+        ex("DB Floor Press","3 × 15","60s","Lie on mat, press both dumbbells up, control down till elbows touch floor."),
+        ex("DB Bent-over Row","3 × 15","60s","Hinge at hips, flat back, pull dumbbells to waist, squeeze shoulder blades."),
+      ]},
+      { name:"Block C · Shoulders + Arms", meta:"3 rounds · rest 45s", exercises:[
+        ex("DB Shoulder Press","3 × 12","45s","Press dumbbells overhead from shoulders, no leaning back."),
+        ex("DB Bicep Curl","3 × 15","45s","Palms up, curl without swinging, slow 2-count down."),
+      ]},
+      { name:"Core Finisher · Oblique Focus", meta:"3 rounds · rest 30s", exercises:[
+        ex("Russian Twist (1 DB)","3 × 20 total","30s","Lean back, feet up, rotate dumbbell side to side — carves love handles."),
+        ex("Bicycle Crunch","3 × 20 total","30s","Opposite elbow to knee, slow and controlled, not rushed."),
+        ex("Side Plank","3 × 30s / side","30s","Hips high, straight line, brace the side abs hard."),
+        ex("Plank","3 × 45s","30s","Squeeze glutes + abs, no sagging hips."),
+      ]},
+    ],
+    cooldown:["Chest doorway stretch — 30s", "Shoulder cross-body stretch — 30s each", "Child's Pose — 45s", "Cobra stretch — 30s", "5 slow deep breaths"]
+  },
+  Tuesday:{
+    type:"hiit", icon:"⚡", focus:"HIIT Fat-Burn + Obliques",
+    tag:"HIIT", duration:"≈ 55 min",
+    blurb:"The day that torches calories. Short, brutal bursts spike your burn for hours afterward (the afterburn effect).",
+    blocks:[
+      { name:"HIIT Circuit", meta:"40s work / 20s rest · 4 rounds", exercises:[
+        ex("Burpees","40s","20s","Full-body fat melter. Modify by stepping back instead of jumping if needed."),
+        ex("Mountain Climbers","40s","20s","Plank position, drive knees fast, hips low."),
+        ex("Squat Jumps","40s","20s","Explode up, land soft. Swap for fast air-squats for low impact."),
+        ex("High Knees","40s","20s","Run in place, knees to hip height, pump arms."),
+        ex("Skater Hops","40s","20s","Lateral bounds side to side — hits obliques + glutes hard."),
+        ex("Plank Jacks","40s","20s","Plank hold, jump feet wide and back together."),
+      ]},
+      { name:"Oblique & Core Circuit", meta:"3 rounds · rest 30s", exercises:[
+        ex("Russian Twist (1 DB)","3 × 24","30s","Controlled rotation, touch dumbbell beside each hip."),
+        ex("DB Woodchopper","3 × 12 / side","30s","Swing dumbbell from high to opposite low knee — pure love-handle work."),
+        ex("Bicycle Crunch","3 × 24","30s","Slow, full rotation through the trunk."),
+        ex("Side Plank w/ Hip Dip","3 × 12 / side","30s","Lower hip toward floor and back up under control."),
+        ex("Leg Raises","3 × 15","30s","Lower abs — keep lower back pressed into the mat."),
+      ]},
+    ],
+    cooldown:["Standing hamstring stretch — 30s each", "Hip-flexor lunge stretch — 30s each", "Lying spinal twist — 30s each", "Deep breathing — 1 min"]
+  },
+  Wednesday:{
+    type:"strength", icon:"🔥", focus:"Full-Body Strength · Legs/Pull",
+    tag:"Strength B", duration:"≈ 60 min",
+    blurb:"Legs and back are your biggest muscles — training them burns the most calories and shapes your whole frame.",
+    blocks:[
+      { name:"Block A · Legs", meta:"3 rounds · rest 60s", exercises:[
+        ex("DB Reverse Lunge","3 × 12 / leg","60s","Step back, drop knee toward floor, drive through front heel."),
+        ex("DB Romanian Deadlift","3 × 15","60s","Soft knees, push hips back, feel hamstrings, flat back throughout."),
+      ]},
+      { name:"Block B · Pull + Glutes", meta:"3 rounds · rest 45–60s", exercises:[
+        ex("DB Bent-over Row","3 × 15","60s","Pull to waist, squeeze back, no jerking."),
+        ex("DB Glute Bridge","3 × 20","45s","Dumbbell on hips, drive up, squeeze glutes hard at top."),
+      ]},
+      { name:"Block C · Arms + Shoulders", meta:"3 rounds · rest 45s", exercises:[
+        ex("DB Hammer Curl","3 × 15","45s","Palms facing in, curl up, control down."),
+        ex("DB Lateral Raise","3 × 15","45s","Raise dumbbells to shoulder height, slight bend, lead with elbows."),
+      ]},
+      { name:"Core Finisher", meta:"3 rounds · rest 30s", exercises:[
+        ex("Plank","3 × 45–60s","30s","Rock solid line head to heels."),
+        ex("Dead Bug","3 × 12 / side","30s","Opposite arm + leg extend, lower back glued to mat."),
+        ex("Reverse Crunch","3 × 15","30s","Curl hips off floor, knees toward chest, slow lower."),
+        ex("Side Plank","3 × 30s / side","30s","Brace obliques, hips lifted."),
+      ]},
+    ],
+    cooldown:["Standing quad stretch — 30s each", "Figure-4 glute stretch — 30s each", "Calf stretch on wall — 30s each", "Child's Pose — 45s"]
+  },
+  Thursday:{
+    type:"hiit", icon:"⚡", focus:"HIIT + Lower-Body Burn",
+    tag:"HIIT", duration:"≈ 55 min",
+    blurb:"Conditioning + glutes and legs. Big-muscle HIIT means a massive calorie cost in under an hour.",
+    blocks:[
+      { name:"HIIT Circuit", meta:"40s work / 20s rest · 4 rounds", exercises:[
+        ex("Squat Jumps","40s","20s","Explosive up, soft landing. Air-squats if low impact."),
+        ex("Alt Reverse Lunges","40s","20s","Step back left/right alternating, steady pace."),
+        ex("Glute Bridge (or DB)","40s","20s","Fast but controlled hip drives, squeeze each rep."),
+        ex("Mountain Climbers","40s","20s","Knees driving, core tight."),
+        ex("Lateral Skater Hops","40s","20s","Bound side to side, stick each landing."),
+        ex("Plank-to-Push-up","40s","20s","Up to hands, down to forearms, alternate lead arm."),
+      ]},
+      { name:"Lower-Ab & Oblique Circuit", meta:"3 rounds · rest 30s", exercises:[
+        ex("Leg Raises","3 × 15","30s","Slow, no momentum, lower back down flat."),
+        ex("Flutter Kicks","3 × 30s","30s","Small fast kicks, legs low, abs engaged."),
+        ex("Russian Twist (1 DB)","3 × 24","30s","Full rotation each side."),
+        ex("Side Plank","3 × 30s / side","30s","Hold strong, hips up."),
+        ex("Bicycle Crunch","3 × 24","30s","Controlled twist, elbow meets opposite knee."),
+      ]},
+    ],
+    cooldown:["Hamstring stretch — 30s each", "Quad stretch — 30s each", "Pigeon / hip stretch — 30s each", "Deep breathing — 1 min"]
+  },
+  Friday:{
+    type:"strength", icon:"💥", focus:"Total-Body Metabolic Circuit",
+    tag:"Burn Finisher", duration:"≈ 60 min",
+    blurb:"The week's grand finale — a fast full-body circuit that crushes calories and ends the week on a high.",
+    blocks:[
+      { name:"Metabolic Circuit", meta:"5 rounds · rest 60s between rounds", exercises:[
+        ex("Goblet Squat","5 × 15","—","Move smoothly into the next exercise, minimal rest inside the round."),
+        ex("Push-ups","5 × 12","—","Steady tempo, full range."),
+        ex("DB Bent-over Row","5 × 15","—","Pull hard, control down."),
+        ex("DB Thruster","5 × 12","—","Squat then press overhead in one fluid move — total-body burner."),
+        ex("Russian Twist (1 DB)","5 × 20","60s","Finish the round with obliques, then rest 60s."),
+      ]},
+      { name:"Core Finisher", meta:"2 rounds · rest 30s", exercises:[
+        ex("Plank","2 × 60s","30s","Hold tight, breathe steady."),
+        ex("Side Plank","2 × 30s / side","30s","Both sides, hips high."),
+        ex("Mountain Climbers","2 × 40s","30s","Empty the tank."),
+      ]},
+    ],
+    cooldown:["Full-body forward fold — 45s", "Chest + shoulder stretch — 30s each", "Spinal twist — 30s each", "Child's Pose + 5 deep breaths"]
+  },
+  Saturday:{
+    type:"recovery", icon:"🌿", focus:"Active Recovery",
+    tag:"Recover", duration:"30–45 min",
+    blurb:"Recovery is where the body burns fat and rebuilds. Stay lightly active — don't just sit.",
+    blocks:[
+      { name:"Move & Mobilise", meta:"Easy pace, no intensity", exercises:[
+        ex("Brisk Walk","30–45 min","—","Steady walk outdoors or on the spot — gentle fat-burn, zero strain."),
+        ex("Full-Body Mobility Flow","8–10 min","—","Cat-cow, world's-greatest-stretch, hip openers, shoulder rolls on the mat."),
+        ex("Gentle Yoga / Stretch","8–10 min","—","Hold easy stretches, breathe deep, release tight spots."),
+        ex("Optional Light Core","2 × 30s plank","—","Only if you feel fresh — keep it easy."),
+      ]},
+    ],
+    cooldown:["Long deep-breathing — 2 min", "Hydrate well", "Prioritise an early night"]
+  },
+  Sunday:{
+    type:"rest", icon:"😴", focus:"Full Rest",
+    tag:"Rest", duration:"All day",
+    blurb:"Complete rest. Muscles grow, hormones reset, and fat-loss accelerates when you actually recover.",
+    blocks:[
+      { name:"Today's Job: Recover", meta:"No structured training", exercises:[
+        ex("Rest & Sleep","7–8 hrs","—","Sleep is the #1 fat-loss and recovery tool — protect it tonight."),
+        ex("Light Stretching (optional)","5–10 min","—","Only if it feels good, nothing intense."),
+        ex("Meal Prep for the Week","—","—","Boil eggs, soak soya chunks/dal, prep veggies — sets you up to win."),
+      ]},
+    ],
+    cooldown:["Relax", "Hydrate", "Plan the week ahead"]
+  },
+};
 
-        const BreakTimerPopup = ({ isOpen, onClose }) => {
-            const [timeLeft, setTimeLeft] = useState(60);
+const NUTRITION = {
+  intro:"You're lean already (60 kg at 5'9\"), so this isn't a crash diet — it's a recomposition. Eat around maintenance with high protein, train hard, and the belly fat drops while you build muscle. No expensive protein boxes needed.",
+  targets:[
+    { k:"Protein", v:"~95–120 g/day", n:"≈ 1.6–2.0 g per kg. Builds & protects muscle, keeps you full." },
+    { k:"Calories", v:"Maintenance to slight deficit", n:"A small deficit (~300 kcal) reveals abs without killing energy." },
+    { k:"Water", v:"3–4 litres/day", n:"Curbs hunger, boosts metabolism & recovery." },
+    { k:"Sleep", v:"7–8 hrs", n:"Poor sleep stalls fat loss. Non-negotiable." },
+  ],
+  proteins:[
+    { f:"Soya Chunks (Nuggets)", p:"~52 g / 100g dry", note:"The cheapest protein in India by far. Soak, boil, add to curry. Your #1 hero.", icon:"🫘", top:true },
+    { f:"Eggs", p:"~6 g each", note:"Your 8/day ≈ 48 g — a great anchor. Spread them across meals, not all at once.", icon:"🥚", top:true },
+    { f:"Dal / Lentils (toor, moong, masoor)", p:"~9 g / cooked cup", note:"Cheap daily staple. Pair with rice/roti for a complete protein.", icon:"🍲" },
+    { f:"Chana & Rajma", p:"~15 g / cup", note:"Protein + fibre that keeps you full for hours. Very budget-friendly.", icon:"🫛" },
+    { f:"Curd / Dahi & Milk", p:"~3–3.5 g / 100 ml", note:"Cheap, gut-friendly protein. Great post-workout or as a snack.", icon:"🥛" },
+    { f:"Peanuts / Roasted Chana", p:"~25 g / 100g", note:"Protein + healthy fats. Perfect cheap snack to beat hunger.", icon:"🥜" },
+    { f:"Sattu (roasted gram flour)", p:"~20 g / 100g", note:"Mix with water + lemon + salt = a desi protein shake for pennies.", icon:"🥤" },
+    { f:"Paneer / Tofu", p:"~18 g / 100g", note:"If budget allows — excellent, filling protein. Tofu is the cheaper option.", icon:"🧀" },
+    { f:"Chicken Breast (if non-veg)", p:"~31 g / 100g", note:"Best price-to-protein animal source. Grill or curry, minimal oil.", icon:"🍗" },
+  ],
+  plate:[
+    "½ plate veggies — fibre, fullness, micronutrients (cheap: spinach, cabbage, carrot, beans, tomato).",
+    "Palm of protein every meal — eggs, soya, dal, curd, chicken.",
+    "Fist of smart carbs — oats, 1–2 roti, brown rice, or sweet potato (not heaps).",
+    "Thumb of healthy fat — peanuts, a few nuts, seeds, or a little ghee.",
+  ],
+  limit:[
+    "Sugary drinks, packaged juice & cola — liquid belly fat.",
+    "Fried snacks (samosa, chips, pakora) — easy calorie bombs.",
+    "Maida / refined carbs, biscuits & sweets — keep these rare.",
+    "Don't drink your calories — chai with lots of sugar adds up fast.",
+  ],
+  sample:[
+    { m:"Breakfast", d:"Oats + milk + peanuts, or 3–4 boiled eggs + 1 roti." },
+    { m:"Lunch", d:"Rice/roti + dal or soya curry + big bowl of veggies + curd." },
+    { m:"Snack", d:"Sattu drink or roasted chana + a fruit. Black coffee pre-workout." },
+    { m:"Post-Workout", d:"Curd or milk + 2 boiled eggs (fast protein for recovery)." },
+    { m:"Dinner", d:"Soya/paneer/chicken + sautéed veggies + small portion of rice/roti." },
+  ]
+};
 
-            useEffect(() => {
-                if (!isOpen) {
-                    setTimeLeft(60);
-                    return;
-                }
+const TIPS = [
+  { icon:"🎯", t:"You can't spot-reduce", d:"No amount of crunches burns belly fat directly. Fat leaves your whole body when you're in a deficit — the ab & oblique work builds the muscle underneath so your waist looks tight once the fat's gone." },
+  { icon:"🍽️", t:"Diet is 70% of the result", d:"You can't out-train a bad diet. The plan creates the burn; your food creates the deficit. Get both right and the love handles fade fast." },
+  { icon:"📈", t:"Progress your light dumbbells", d:"5 kg feels light, so make it count: slower tempo (3s down), shorter rest, more reps, and pause-reps. When 15 feels easy, push to 18–20 or slow it further." },
+  { icon:"🔁", t:"Consistency beats intensity", d:"Five solid 1-hour sessions every week for 8–12 weeks will transform you. One perfect week then quitting does nothing. Show up." },
+  { icon:"😴", t:"Sleep & water are fat-loss tools", d:"7–8 hrs of sleep and 3–4 L of water aren't optional extras — poor sleep raises hunger hormones and stalls fat loss directly." },
+  { icon:"🧠", t:"Mind-muscle + form first", d:"Feel the target muscle work. Clean form on lighter weight beats sloppy reps — it builds better and protects you from injury." },
+  { icon:"📸", t:"Track the right way", d:"The scale lies week to week. Use weekly waist measurements, progress photos, and how clothes fit. Recomp means the mirror changes even if weight barely moves." },
+];
 
-                const interval = setInterval(() => {
-                    setTimeLeft(prev => {
-                        if (prev <= 1) {
-                            clearInterval(interval);
-                            onClose();
-                            return 60;
-                        }
-                        return prev - 1;
-                    });
-                }, 1000);
+const QUOTES = [
+  "Discipline is choosing what you want most over what you want now.",
+  "You don't have to be extreme, just consistent.",
+  "Sweat now, shine later.",
+  "Small steps every day add up to big results.",
+  "The body achieves what the mind believes.",
+  "Fall in love with the process and the results will come.",
+  "One workout at a time. One meal at a time. One day at a time.",
+  "Strong is the new goal.",
+];
 
-                return () => clearInterval(interval);
-            }, [isOpen, onClose]);
+const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
 
-            if (!isOpen) return null;
+/* ============================ STORAGE ============================ */
+const store = {
+  mem:{},
+  async get(key){
+    try{ if(window.storage && window.storage.get){ const r = await window.storage.get(key); return r ? r.value : null; } }catch(e){}
+    return (key in this.mem) ? this.mem[key] : null;
+  },
+  async set(key,val){
+    this.mem[key]=val;
+    try{ if(window.storage && window.storage.set){ await window.storage.set(key,val); } }catch(e){}
+  }
+};
 
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-            };
+function ymd(date){ const y=date.getFullYear(); const m=String(date.getMonth()+1).padStart(2,'0'); const d=String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; }
+function calcStreak(dates){
+  const set=new Set(dates); let s=0; let cur=new Date();
+  if(!set.has(ymd(cur))) cur.setDate(cur.getDate()-1);
+  while(set.has(ymd(cur))){ s++; cur.setDate(cur.getDate()-1); }
+  return s;
+}
+function weekDatesCount(dates){
+  const now=new Date(); const day=(now.getDay()+6)%7;
+  const start=new Date(now); start.setDate(now.getDate()-day); start.setHours(0,0,0,0);
+  return dates.filter(d=>{ const dt=new Date(d+'T00:00:00'); return dt>=start; }).length;
+}
+function beep(){
+  try{
+    const Ctx=window.AudioContext||window.webkitAudioContext; if(!Ctx) return;
+    const c=new Ctx(); const o=c.createOscillator(); const g=c.createGain();
+    o.connect(g); g.connect(c.destination); o.type='sine'; o.frequency.value=820;
+    g.gain.setValueAtTime(.001,c.currentTime); g.gain.exponentialRampToValueAtTime(.25,c.currentTime+.02);
+    g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.5); o.start(); o.stop(c.currentTime+.52);
+  }catch(e){}
+}
 
-            return (
-                <>
-                    <div className="overlay"></div>
-                    <div className="timer-popup">
-                        <h3 className="text-2xl font-bold text-orange-400 mb-4">Take a Break!</h3>
-                        <div className="text-4xl font-bold text-white">{formatTime(timeLeft)}</div>
-                        <p className="text-gray-300 mt-2">Rest for 60 seconds before your next exercise</p>
-                    </div>
-                </>
-            );
-        };
+/* ============================ SMALL UI ============================ */
+function Ring({ value, size=70, stroke=8, color="#C96442", label, sub }){
+  const r=(size-stroke)/2, c=2*Math.PI*r, off=c*(1-Math.min(value,1));
+  return (
+    <div className="relative inline-flex items-center justify-center shrink-0" style={{width:size,height:size}}>
+      <svg width={size} height={size}>
+        <circle className="ringtrack" cx={size/2} cy={size/2} r={r} strokeWidth={stroke} fill="none"/>
+        <circle cx={size/2} cy={size/2} r={r} strokeWidth={stroke} fill="none" stroke={color}
+          strokeLinecap="round" strokeDasharray={c} strokeDashoffset={off}
+          style={{transition:'stroke-dashoffset .6s cubic-bezier(.2,.7,.2,1)'}}
+          transform={`rotate(-90 ${size/2} ${size/2})`}/>
+      </svg>
+      <div className="absolute text-center leading-none">
+        <div className="font-extrabold" style={{fontSize:size*0.26,color:'var(--ink)'}}>{label}</div>
+        {sub && <div className="font-bold" style={{fontSize:size*0.13,color:'var(--muted)'}}>{sub}</div>}
+      </div>
+    </div>
+  );
+}
 
-        const Timer = ({ duration, onComplete }) => {
-            const [timeLeft, setTimeLeft] = useState(duration);
-            const [isActive, setIsActive] = useState(false);
+function HeroArt(){
+  return (
+    <svg viewBox="0 0 220 160" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="g2" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#B0532F"/><stop offset="1" stopColor="#8E3F22"/>
+        </linearGradient>
+      </defs>
+      <circle cx="110" cy="84" r="60" fill="#fff" opacity=".10"/>
+      <circle cx="110" cy="84" r="46" fill="#fff" opacity=".12"/>
+      <path d="M38 84a72 72 0 0 1 144 0" fill="none" stroke="#FFE3D0" strokeWidth="5" strokeLinecap="round" opacity=".75"/>
+      <path d="M52 90a58 58 0 0 1 116 0" fill="none" stroke="#FFD2B4" strokeWidth="4" strokeLinecap="round" opacity=".55"/>
+      <g fill="url(#g2)">
+        <circle cx="110" cy="48" r="11"/>
+        <rect x="103" y="60" width="14" height="34" rx="7"/>
+        <rect x="74" y="50" width="30" height="9" rx="4.5" transform="rotate(-18 74 50)"/>
+        <rect x="116" y="50" width="30" height="9" rx="4.5" transform="rotate(18 146 50)"/>
+        <rect x="100" y="92" width="10" height="30" rx="5" transform="rotate(16 100 92)"/>
+        <rect x="110" y="92" width="10" height="30" rx="5" transform="rotate(-20 120 92)"/>
+      </g>
+      <rect x="60" y="34" width="100" height="6" rx="3" fill="#5C2C16"/>
+      <rect x="52" y="26" width="12" height="22" rx="4" fill="#3A1B0D"/>
+      <rect x="156" y="26" width="12" height="22" rx="4" fill="#3A1B0D"/>
+      <rect x="44" y="30" width="9" height="14" rx="3" fill="#5C2C16"/>
+      <rect x="167" y="30" width="9" height="14" rx="3" fill="#5C2C16"/>
+      <path d="M168 118l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#FFE3D0"/>
+    </svg>
+  );
+}
 
-            useEffect(() => {
-                let interval = null;
-                if (isActive && timeLeft > 0) {
-                    interval = setInterval(() => {
-                        setTimeLeft(timeLeft => timeLeft - 1);
-                    }, 1000);
-                } else if (timeLeft === 0) {
-                    onComplete();
-                    setIsActive(false);
-                }
-                return () => clearInterval(interval);
-            }, [isActive, timeLeft, onComplete]);
+/* ============================ REST TIMER ============================ */
+function RestTimer({ total, onClose, nextLabel }){
+  const [t,setT]=useState(total);
+  const ref=useRef(null);
+  useEffect(()=>{
+    ref.current=setInterval(()=>{ setT(p=>{ if(p<=1){ clearInterval(ref.current); beep(); setTimeout(onClose,400); return 0; } return p-1; }); },1000);
+    return ()=>clearInterval(ref.current);
+  },[]);
+  const pct=t/total;
+  const mm=Math.floor(t/60), ss=String(t%60).padStart(2,'0');
+  return (
+    <div className="timer-back" onClick={onClose}>
+      <div className="card pop p-6 sm:p-7 text-center w-full max-w-[300px]" onClick={e=>e.stopPropagation()}>
+        <div className="text-xs font-extrabold tracking-widest uppercase" style={{color:'var(--clay)'}}>Rest</div>
+        <div className="my-4 flex justify-center">
+          <Ring value={pct} size={140} stroke={12} color="#C96442" label={`${mm}:${ss}`} />
+        </div>
+        {nextLabel && <div className="text-sm font-bold mb-4 px-2" style={{color:'var(--ink2)'}}>Next: <span className="grad-text">{nextLabel}</span></div>}
+        <div className="flex gap-2 justify-center">
+          <button onClick={()=>setT(p=>p+15)} className="pill soft px-5 py-2.5 font-extrabold text-sm" style={{color:'var(--ink2)'}}>+15s</button>
+          <button onClick={onClose} className="pill clay-grad text-white px-6 py-2.5 rounded-2xl font-extrabold text-sm shadow-md">Skip ›</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-            const toggleTimer = () => {
-                setIsActive(!isActive);
-            };
+/* ============================ EXERCISE ITEM ============================ */
+function ExItem({ id, e, done, onToggle, onRest }){
+  const restSecs = (()=>{ const m=(e.rest||'').match(/(\d+)/); return m?parseInt(m[1]):60; })();
+  const hasRest = e.rest && e.rest!=='—';
+  return (
+    <div className={`soft p-3 flex gap-2.5 items-start ${done?'seg':''}`} style={done?{background:'#F1F5EC',borderColor:'#D8E6CC'}:{}}>
+      <button onClick={onToggle} aria-label="toggle complete"
+        className={`pill shrink-0 mt-0.5 w-8 h-8 rounded-xl flex items-center justify-center font-black text-sm ${done?'sage-grad text-white check-anim':'bg-white'}`}
+        style={done?{}:{border:'2px solid #E3D8C7',color:'transparent'}}>
+        {done?'✓':''}
+      </button>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="font-extrabold text-[14.5px] leading-snug min-w-0 break-words" style={{color:done?'#5F744F':'var(--ink)', textDecoration:done?'line-through':'none'}}>{e.name}</span>
+          <span className="shrink-0 whitespace-nowrap font-extrabold text-[12.5px]" style={{color:'var(--clay)'}}>{e.detail}</span>
+        </div>
+        <p className="text-[12px] mt-0.5 leading-snug" style={{color:'var(--muted)'}}>{e.desc}</p>
+        {hasRest &&
+          <button onClick={()=>onRest(restSecs, e.name)}
+            className="pill mt-2 inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11.5px] font-extrabold"
+            style={{background:'#FBEFE6',color:'var(--clay-deep)',border:'1px solid #F0DCCB'}}>
+            ⏱ Rest {e.rest}
+          </button>}
+      </div>
+    </div>
+  );
+}
 
-            const resetTimer = () => {
-                setTimeLeft(duration);
-                setIsActive(false);
-            };
+/* ============================ WORKOUT DAY ============================ */
+function WorkoutDay({ dayKey, data, progress, toggle, resetDay, onRest, openDefault, isToday }){
+  const [open,setOpen]=useState(openDefault);
+  const allIds=[]; data.blocks.forEach((b,bi)=>b.exercises.forEach((e,ei)=>allIds.push(`${dayKey}-${bi}-${ei}`)));
+  const doneCount=allIds.filter(id=>progress[id]).length;
+  const total=allIds.length;
+  const pct= total? doneCount/total : 0;
+  const complete= total>0 && doneCount===total;
+  const accent = data.type==='strength'?'clay-grad': data.type==='hiit'?'amber-grad': data.type==='recovery'?'sage-grad':'ink-grad';
 
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-            };
-
-            return (
-                <div className="flex items-center space-x-4 bg-gray-800 p-4 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-400">
-                        {formatTime(timeLeft)}
-                    </div>
-                    <button
-                        onClick={toggleTimer}
-                        className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-                    >
-                        {isActive ? 'Pause' : 'Start'}
-                    </button>
-                    <button
-                        onClick={resetTimer}
-                        className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200"
-                    >
-                        Reset
-                    </button>
+  return (
+    <div className={`card overflow-hidden ${isToday?'glow':''}`}>
+      <button onClick={()=>setOpen(o=>!o)} className="w-full text-left block">
+        <div className={`relative ${accent} noise p-4 sm:p-5 text-white`}>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="text-2xl sm:text-3xl shrink-0">{data.icon}</div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="text-lg sm:text-xl font-black">{dayKey}</h3>
+                  {isToday && <span className="text-[10px] font-black bg-white/25 px-2 py-0.5 rounded-full tracking-wide">TODAY</span>}
                 </div>
-            );
-        };
+                <p className="text-[13px] sm:text-sm font-bold text-white/90 leading-snug">{data.focus}</p>
+                <p className="text-[11px] font-bold text-white/75 mt-0.5">{data.tag} · {data.duration}</p>
+              </div>
+            </div>
+            <div className="shrink-0">
+              {total>0 ?
+                <Ring value={pct} size={52} stroke={6} color="#fff"
+                  label={complete?'✓':`${doneCount}`} sub={complete?'':`/ ${total}`} /> :
+                <span className="text-2xl pr-1">›</span>}
+            </div>
+          </div>
+        </div>
+      </button>
 
-        const ConfettiAnimation = () => {
-            const [confetti, setConfetti] = useState([]);
+      {open &&
+      <div className="p-3.5 sm:p-5 rise">
+        <div className="soft p-3.5 mb-4" style={{background:'#FBF4EA'}}>
+          <p className="text-[13px] font-semibold leading-snug" style={{color:'var(--ink2)'}}>{data.blurb}</p>
+        </div>
 
-            useEffect(() => {
-                const newConfetti = [];
-                for (let i = 0; i < 50; i++) {
-                    newConfetti.push({
-                        id: i,
-                        left: Math.random() * 100,
-                        animationDelay: Math.random() * 3,
-                        animationDuration: Math.random() * 3 + 2,
-                        backgroundColor: ['#ff6b6b', '#ff8e53', '#ff6b9d', '#4ecdc4', '#45b7d1'][Math.floor(Math.random() * 5)]
-                    });
-                }
-                setConfetti(newConfetti);
+        {data.type!=='rest' && data.type!=='recovery' &&
+          <div className="mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-base">🔥</span>
+              <h4 className="font-black text-[15px]" style={{color:'var(--ink)'}}>Warm-up <span className="font-bold text-[12px]" style={{color:'var(--muted)'}}>· {WARMUP.duration}</span></h4>
+            </div>
+            <div className="soft p-3 grid sm:grid-cols-2 gap-x-4 gap-y-1.5">
+              {WARMUP.items.map((w,i)=><div key={i} className="text-[12.5px] font-semibold flex gap-2" style={{color:'var(--ink2)'}}><span style={{color:'var(--clay)'}}>•</span>{w}</div>)}
+            </div>
+          </div>}
 
-                const timer = setTimeout(() => {
-                    setConfetti([]);
-                }, 3000);
+        {data.blocks.map((b,bi)=>(
+          <div key={bi} className="mb-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h4 className="font-black text-[14.5px] min-w-0" style={{color:'var(--ink)'}}>{b.name}</h4>
+              <span className="shrink-0 text-[10.5px] font-extrabold px-2 py-1 rounded-lg text-right" style={{background:'#F1EADC',color:'var(--ink2)'}}>{b.meta}</span>
+            </div>
+            <div className="space-y-2">
+              {b.exercises.map((e,ei)=>{ const id=`${dayKey}-${bi}-${ei}`; return (
+                <ExItem key={id} id={id} e={e} done={!!progress[id]} onToggle={()=>toggle(id)} onRest={onRest}/>
+              );})}
+            </div>
+          </div>
+        ))}
 
-                return () => clearTimeout(timer);
-            }, []);
+        {data.cooldown &&
+          <div className="mb-2">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-base">🧘</span>
+              <h4 className="font-black text-[15px]" style={{color:'var(--ink)'}}>{data.type==='rest'?'Reminders':'Cool-down & Stretch'}</h4>
+            </div>
+            <div className="soft p-3 grid sm:grid-cols-2 gap-x-4 gap-y-1.5" style={{background:'#F2F5EE'}}>
+              {data.cooldown.map((c,i)=><div key={i} className="text-[12.5px] font-semibold flex gap-2" style={{color:'var(--sage-deep)'}}><span>•</span>{c}</div>)}
+            </div>
+          </div>}
 
-            return (
-                <div className="fixed inset-0 pointer-events-none z-50">
-                    {confetti.map((piece) => (
-                        <div
-                            key={piece.id}
-                            className="confetti"
-                            style={{
-                                left: `${piece.left}%`,
-                                backgroundColor: piece.backgroundColor,
-                                animationDelay: `${piece.animationDelay}s`,
-                                animationDuration: `${piece.animationDuration}s`,
-                                animation: `fall ${piece.animationDuration}s ${piece.animationDelay}s linear forwards`
-                            }}
-                        />
-                    ))}
+        {total>0 && doneCount>0 &&
+          <div className="flex items-center justify-between gap-2 mt-4 pt-3" style={{borderTop:'1px solid var(--line)'}}>
+            <span className="text-[12px] font-extrabold min-w-0" style={{color: complete?'var(--sage-deep)':'var(--muted)'}}>
+              {complete? '🏆 Day complete — great work!' : `${doneCount} of ${total} done`}
+            </span>
+            <button onClick={()=>resetDay(allIds)} className="pill shrink-0 text-[12px] font-extrabold px-3 py-1.5 rounded-lg" style={{color:'var(--clay-deep)',background:'#FBEFE6'}}>Reset</button>
+          </div>}
+      </div>}
+    </div>
+  );
+}
+
+/* ============================ VIEWS ============================ */
+function StatCard({ icon, big, label, color }){
+  return (
+    <div className="card p-3 sm:p-4 text-center">
+      <div className="text-xl sm:text-2xl mb-0.5">{icon}</div>
+      <div className="text-xl sm:text-2xl font-black leading-tight" style={{color:color||'var(--ink)'}}>{big}</div>
+      <div className="text-[10px] sm:text-[11.5px] font-extrabold uppercase tracking-wide leading-tight" style={{color:'var(--muted)'}}>{label}</div>
+    </div>
+  );
+}
+
+function TodayView({ today, data, progress, toggle, resetDay, onRest, streak, weekCount, quote, weightLog, addWeight }){
+  const allIds=[]; data.blocks.forEach((b,bi)=>b.exercises.forEach((e,ei)=>allIds.push(`${today}-${bi}-${ei}`)));
+  const doneCount=allIds.filter(id=>progress[id]).length;
+  const pct= allIds.length? doneCount/allIds.length:0;
+  const [w,setW]=useState("");
+  const last = weightLog.length? weightLog[weightLog.length-1]:null;
+
+  return (
+    <div className="space-y-4">
+      {/* hero */}
+      <div className="card overflow-hidden">
+        <div className="clay-grad noise relative p-4 sm:p-6 text-white">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="text-[11px] sm:text-[12px] font-extrabold text-white/80 tracking-wide">{new Date().toLocaleDateString('en-US',{weekday:'long', day:'numeric', month:'long'})}</div>
+              <h1 className="text-[22px] sm:text-3xl font-black mt-1 leading-tight">Let's go, Mad 💪</h1>
+              <p className="text-[12.5px] sm:text-[13.5px] font-semibold text-white/90 mt-1.5 italic leading-snug">"{quote}"</p>
+            </div>
+            <div className="w-20 h-16 sm:w-36 sm:h-28 shrink-0">
+              <HeroArt/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* stats */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <StatCard icon="🔥" big={streak} label="Day streak" color="var(--clay)"/>
+        <StatCard icon="📅" big={`${weekCount}/5`} label="This week" color="var(--sage-deep)"/>
+        <div className="card p-2.5 sm:p-3 flex flex-col items-center justify-center">
+          <Ring value={pct} size={52} stroke={6} color="#C96442" label={`${Math.round(pct*100)}%`} />
+          <div className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wide mt-1" style={{color:'var(--muted)'}}>Today</div>
+        </div>
+      </div>
+
+      {/* weight quick log */}
+      <div className="card p-4">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="min-w-0">
+            <div className="font-black text-[15px]" style={{color:'var(--ink)'}}>⚖️ Weigh-in tracker</div>
+            <div className="text-[12px] font-semibold" style={{color:'var(--muted)'}}>
+              {last? `Last: ${last.v} kg · ${last.d}` : "Log weekly — watch the trend, not daily noise."}
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <input value={w} onChange={e=>setW(e.target.value)} inputMode="decimal" placeholder="kg"
+              className="no-zoom w-20 px-3 py-2 rounded-xl font-extrabold text-center outline-none"
+              style={{border:'1px solid var(--line)',background:'var(--card2)',color:'var(--ink)'}}/>
+            <button onClick={()=>{ const n=parseFloat(w); if(!isNaN(n)){ addWeight(n); setW(""); } }}
+              className="pill clay-grad text-white px-4 py-2.5 rounded-xl font-extrabold text-sm shadow-md">Log</button>
+          </div>
+        </div>
+        {weightLog.length>1 &&
+          <div className="mt-3 flex items-end gap-1.5 h-12">
+            {weightLog.slice(-12).map((p,i,arr)=>{ const vals=arr.map(x=>x.v); const mn=Math.min(...vals), mx=Math.max(...vals); const h=mx===mn?60:20+((p.v-mn)/(mx-mn))*80;
+              return <div key={i} className="flex-1 rounded-t-md" title={`${p.v}kg`} style={{height:`${h}%`,background:'linear-gradient(180deg,#E08A5B,#C96442)'}}></div>; })}
+          </div>}
+      </div>
+
+      {/* today's workout */}
+      <div>
+        <h2 className="font-black text-lg px-1 mb-2" style={{color:'var(--ink)'}}>Today's Session</h2>
+        <WorkoutDay dayKey={today} data={data} progress={progress} toggle={toggle} resetDay={resetDay} onRest={onRest} openDefault={true} isToday={true}/>
+      </div>
+    </div>
+  );
+}
+
+function PlanView({ progress, toggle, resetDay, onRest, today }){
+  return (
+    <div className="space-y-4">
+      <div className="card p-4 sm:p-5 amber-grad noise text-white">
+        <h1 className="text-xl sm:text-2xl font-black">Your 7-Day Plan</h1>
+        <p className="text-[13px] sm:text-[13.5px] font-semibold text-white/90 mt-1 leading-snug">5 training days engineered for fat loss + a lean, strong core. Tap any day to open it.</p>
+      </div>
+      <div className="space-y-3">
+        {DAYS.map(d=>(
+          <WorkoutDay key={d} dayKey={d} data={PROGRAM[d]} progress={progress} toggle={toggle} resetDay={resetDay} onRest={onRest} openDefault={false} isToday={d===today}/>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NutritionView(){
+  return (
+    <div className="space-y-4">
+      <div className="card p-4 sm:p-5 sage-grad noise text-white">
+        <h1 className="text-xl sm:text-2xl font-black">Eat to Get Lean 🥗</h1>
+        <p className="text-[13px] sm:text-[13.5px] font-semibold text-white/90 mt-1.5 leading-snug">{NUTRITION.intro}</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+        {NUTRITION.targets.map((t,i)=>(
+          <div key={i} className="card p-3.5 sm:p-4">
+            <div className="text-[11px] font-black uppercase tracking-wide" style={{color:'var(--clay)'}}>{t.k}</div>
+            <div className="font-black text-[14.5px] my-0.5 leading-tight" style={{color:'var(--ink)'}}>{t.v}</div>
+            <div className="text-[11.5px] font-semibold leading-snug" style={{color:'var(--muted)'}}>{t.n}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="card p-4 sm:p-5">
+        <h2 className="font-black text-lg mb-1" style={{color:'var(--ink)'}}>Cheap Protein Heroes 🇮🇳</h2>
+        <p className="text-[12.5px] font-semibold mb-3" style={{color:'var(--muted)'}}>Skip the costly protein boxes — these beat them on price and do the same job.</p>
+        <div className="space-y-2.5">
+          {NUTRITION.proteins.map((p,i)=>(
+            <div key={i} className="soft p-3.5 flex gap-3" style={p.top?{background:'#FBF1E7',borderColor:'#F0DAC8'}:{}}>
+              <div className="text-2xl shrink-0">{p.icon}</div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-baseline justify-between gap-2">
+                  <span className="font-black text-[14px] min-w-0 break-words" style={{color:'var(--ink)'}}>{p.f} {p.top && <span className="text-[9.5px] font-black align-middle ml-1 px-1.5 py-0.5 rounded-full clay-grad text-white whitespace-nowrap">TOP PICK</span>}</span>
+                  <span className="shrink-0 whitespace-nowrap font-extrabold text-[12px]" style={{color:'var(--clay)'}}>{p.p}</span>
                 </div>
-            );
-        };
+                <p className="text-[12.5px] font-semibold mt-0.5 leading-snug" style={{color:'var(--ink2)'}}>{p.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        const MuscleGroupCard = ({ muscleName, muscleData, dayCompleted, onMuscleComplete }) => {
-            const [expanded, setExpanded] = useState(false);
-            const [exercisesCompleted, setExercisesCompleted] = useState({});
-            const [showBreakTimer, setShowBreakTimer] = useState(false);
+      <div className="grid md:grid-cols-2 gap-3">
+        <div className="card p-4 sm:p-5">
+          <h2 className="font-black text-[16px] mb-2" style={{color:'var(--ink)'}}>🍱 Build Every Plate</h2>
+          <div className="space-y-2">
+            {NUTRITION.plate.map((p,i)=><div key={i} className="text-[13px] font-semibold flex gap-2" style={{color:'var(--ink2)'}}><span style={{color:'var(--sage-deep)'}}>✓</span>{p}</div>)}
+          </div>
+        </div>
+        <div className="card p-4 sm:p-5">
+          <h2 className="font-black text-[16px] mb-2" style={{color:'var(--ink)'}}>🚫 Keep These Rare</h2>
+          <div className="space-y-2">
+            {NUTRITION.limit.map((p,i)=><div key={i} className="text-[13px] font-semibold flex gap-2" style={{color:'var(--ink2)'}}><span style={{color:'var(--clay-deep)'}}>✕</span>{p}</div>)}
+          </div>
+        </div>
+      </div>
 
-            const handleExerciseComplete = (exerciseIndex) => {
-                setExercisesCompleted(prev => ({
-                    ...prev,
-                    [exerciseIndex]: !prev[exerciseIndex]
-                }));
-                if (!exercisesCompleted[exerciseIndex]) {
-                    setShowBreakTimer(true);
-                }
-            };
+      <div className="card p-4 sm:p-5">
+        <h2 className="font-black text-lg mb-3" style={{color:'var(--ink)'}}>A Cheap, High-Protein Day 📋</h2>
+        <div className="space-y-2.5">
+          {NUTRITION.sample.map((s,i)=>(
+            <div key={i} className="flex gap-2.5 items-start">
+              <span className="shrink-0 text-[10.5px] font-black uppercase tracking-wide px-2 py-1.5 rounded-lg w-[88px] sm:w-28 text-center" style={{background:'#F1EADC',color:'var(--ink2)'}}>{s.m}</span>
+              <span className="text-[13px] font-semibold pt-1 min-w-0" style={{color:'var(--ink2)'}}>{s.d}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-            const completedExercises = Object.values(exercisesCompleted).filter(Boolean).length;
-            const totalExercises = muscleData.exercises.length;
-            const muscleGroupCompleted = completedExercises === totalExercises;
+function TipsView(){
+  return (
+    <div className="space-y-4">
+      <div className="card p-4 sm:p-5 ink-grad noise text-white">
+        <h1 className="text-xl sm:text-2xl font-black">Trainer's Playbook 🧠</h1>
+        <p className="text-[13px] sm:text-[13.5px] font-semibold text-white/85 mt-1 leading-snug">The 7 truths that decide whether the belly fat actually goes.</p>
+      </div>
+      <div className="space-y-3">
+        {TIPS.map((t,i)=>(
+          <div key={i} className="card p-4 flex gap-3.5">
+            <div className="text-2xl shrink-0">{t.icon}</div>
+            <div className="min-w-0">
+              <h3 className="font-black text-[15px]" style={{color:'var(--ink)'}}>{t.t}</h3>
+              <p className="text-[13px] font-semibold leading-snug mt-0.5" style={{color:'var(--ink2)'}}>{t.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="card p-4 sm:p-5" style={{background:'#FBF4EA'}}>
+        <p className="text-[13px] font-bold leading-snug" style={{color:'var(--ink2)'}}>💡 Reality check: at 60 kg and 5'9", you're already lean. Aim for a slow, steady recomposition over 8–12 weeks — building muscle while gently dropping fat. Crash diets backfire. Be patient, stay consistent, and trust the process.</p>
+      </div>
+    </div>
+  );
+}
 
-            useEffect(() => {
-                if (muscleGroupCompleted) {
-                    onMuscleComplete(muscleName);
-                }
-            }, [muscleGroupCompleted, muscleName, onMuscleComplete]);
+/* ============================ APP ============================ */
+function App(){
+  const [tab,setTab]=useState("today");
+  const [progress,setProgress]=useState({});
+  const [completedDates,setCompletedDates]=useState([]);
+  const [weightLog,setWeightLog]=useState([]);
+  const [loaded,setLoaded]=useState(false);
+  const [rest,setRest]=useState(null);
+  const [confetti,setConfetti]=useState(false);
+  const [quote]=useState(QUOTES[Math.floor(Math.random()*QUOTES.length)]);
 
-            return (
-                <div className="bg-gray-800 rounded-xl overflow-hidden card-hover">
-                    <BreakTimerPopup isOpen={showBreakTimer} onClose={() => setShowBreakTimer(false)} />
-                    <div className={`${muscleData.gradient} p-6 text-white`}>
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <div className="muscle-icon">{muscleData.icon}</div>
-                                <div>
-                                    <h4 className="text-2xl font-bold">{muscleName}</h4>
-                                    <p className="text-sm opacity-90">{totalExercises} exercises</p>
-                                </div>
-                            </div>
-                            <div className="text-right">
-                                <div className="text-3xl font-bold">{completedExercises}/{totalExercises}</div>
-                                {muscleGroupCompleted && (
-                                    <div className="bg-white bg-opacity-30 px-3 py-1 rounded-full text-sm font-semibold bounce-in">
-                                        ✓ Complete
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        
-                        <div className="mt-4">
-                            <div className="w-full bg-white bg-opacity-30 rounded-full h-2">
-                                <div 
-                                    className="bg-white h-2 rounded-full transition-all duration-500"
-                                    style={{ width: `${(completedExercises / totalExercises) * 100}%` }}
-                                />
-                            </div>
-                        </div>
-                    </div>
+  const today = new Date().toLocaleDateString('en-US',{weekday:'long'});
+  const todayData = PROGRAM[today] || PROGRAM.Monday;
 
-                    <div className="p-6">
-                        <button
-                            onClick={() => setExpanded(!expanded)}
-                            className="w-full bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 mb-4"
-                            disabled={showBreakTimer}
-                        >
-                            {expanded ? 'Hide Exercises' : 'Show Exercises'}
-                        </button>
+  useEffect(()=>{ (async()=>{
+    const raw=await store.get('madfit_v1');
+    if(raw){ try{ const d=JSON.parse(raw); setProgress(d.progress||{}); setCompletedDates(d.completedDates||[]); setWeightLog(d.weightLog||[]); }catch(e){} }
+    setLoaded(true);
+  })(); },[]);
 
-                        {expanded && (
-                            <div className="space-y-4">
-                                {muscleData.exercises.map((exercise, index) => (
-                                    <div key={index} className="bg-gray-700 p-4 rounded-lg">
-                                        <div className="flex justify-between items-start mb-2">
-                                            <h5 className="font-semibold text-white">{exercise.name}</h5>
-                                            <div className="flex items-center space-x-2">
-                                                <span className="text-orange-400 font-bold text-sm">
-                                                    {exercise.sets} × {exercise.reps} | {exercise.rest} rest
-                                                </span>
-                                                <button
-                                                    onClick={() => handleExerciseComplete(index)}
-                                                    className={`px-3 py-1 rounded-full text-sm font-semibold transition-colors duration-200 ${
-                                                        exercisesCompleted[index] 
-                                                            ? 'bg-green-500 text-white' 
-                                                            : 'bg-gray-600 hover:bg-gray-500 text-white'
-                                                    }`}
-                                                    disabled={showBreakTimer}
-                                                >
-                                                    {exercisesCompleted[index] ? '✓' : '○'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                        <p className="text-gray-300 text-sm">{exercise.description}</p>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-            );
-        };
+  useEffect(()=>{ if(loaded) store.set('madfit_v1', JSON.stringify({progress,completedDates,weightLog})); },[progress,completedDates,weightLog,loaded]);
 
-        const WorkoutDay = ({ day, data, isCompleted, onComplete }) => {
-            const [expanded, setExpanded] = useState(false);
-            const [showTimer, setShowTimer] = useState(false);
-            const [completedMuscleGroups, setCompletedMuscleGroups] = useState({});
-            const [isBreakTimerActive, setIsBreakTimerActive] = useState(false);
+  const dayIds = useCallback((dk)=>{ const ids=[]; const d=PROGRAM[dk]; d.blocks.forEach((b,bi)=>b.exercises.forEach((e,ei)=>ids.push(`${dk}-${bi}-${ei}`))); return ids; },[]);
 
-            const handleMuscleGroupComplete = (muscleGroup) => {
-                setCompletedMuscleGroups(prev => ({
-                    ...prev,
-                    [muscleGroup]: true
-                }));
-            };
+  const checkComplete = useCallback((np)=>{
+    const ids=dayIds(today); if(ids.length===0) return;
+    const all=ids.every(id=>np[id]);
+    if(all){
+      const d=ymd(new Date());
+      setCompletedDates(prev=> prev.includes(d)?prev:[...prev,d]);
+      setConfetti(true); beep(); setTimeout(()=>setConfetti(false),2600);
+    }
+  },[today,dayIds]);
 
-            const completedGroups = Object.values(completedMuscleGroups).filter(Boolean).length;
-            const totalGroups = Object.keys(data.muscleGroups).length;
-            const dayCompleted = completedGroups === totalGroups;
+  const toggle = (id)=> setProgress(p=>{ const np={...p}; if(np[id]) delete np[id]; else np[id]=true; checkComplete(np); return np; });
+  const resetDay = (ids)=> setProgress(p=>{ const np={...p}; ids.forEach(id=>delete np[id]); return np; });
+  const addWeight = (v)=> setWeightLog(l=>[...l,{v, d:new Date().toLocaleDateString('en-US',{day:'numeric',month:'short'})}]);
+  const onRest = (secs,label)=> setRest({secs,label});
 
-            useEffect(() => {
-                if (dayCompleted && !isCompleted) {
-                    onComplete(day);
-                }
-            }, [dayCompleted, isCompleted, day, onComplete]);
+  const streak = calcStreak(completedDates);
+  const weekCount = weekDatesCount(completedDates);
 
-            return (
-                <div className="bg-gray-800 rounded-xl p-6 card-hover">
-                    <div className="flex justify-between items-center mb-6">
-                        <div>
-                            <h3 className="text-3xl font-bold text-orange-400">{day}</h3>
-                            <p className="text-gray-300 text-lg">{data.title}</p>
-                            <p className="text-gray-400 text-sm mt-1">{completedGroups}/{totalGroups} muscle groups completed</p>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            {isCompleted && (
-                                <div className="bg-green-500 text-white px-6 py-3 rounded-full text-lg font-semibold bounce-in">
-                                    🏆 Day Complete!
-                                </div>
-                            )}
-                            <button
-                                onClick={() => setExpanded(!expanded)}
-                                className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-semibold"
-                                disabled={isBreakTimerActive}
-                            >
-                                {expanded ? 'Collapse' : 'Start Workout'}
-                            </button>
-                        </div>
-                    </div>
+  const tabs=[
+    {k:"today",label:"Today",icon:"🏠"},
+    {k:"plan",label:"Plan",icon:"📋"},
+    {k:"eat",label:"Eat",icon:"🥗"},
+    {k:"learn",label:"Learn",icon:"🧠"},
+  ];
 
-                    {expanded && (
-                        <div className="space-y-8">
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <h4 className="font-semibold text-orange-300 mb-2">🔥 Warm-up (5 min)</h4>
-                                <p className="text-gray-300">{data.warmup}</p>
-                            </div>
+  return (
+    <div className="min-h-screen pad-nav">
+      {/* top bar */}
+      <div className="sticky top-0 z-40 top-safe" style={{background:'rgba(250,248,243,.85)',backdropFilter:'blur(12px)',borderBottom:'1px solid var(--line)'}}>
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-9 h-9 rounded-xl clay-grad flex items-center justify-center text-white font-black text-lg shadow shrink-0">M</div>
+            <div className="leading-none min-w-0">
+              <div className="font-black text-[16px] sm:text-[17px] tracking-tight" style={{color:'var(--ink)'}}>MAD<span className="grad-text">FIT</span></div>
+              <div className="text-[10px] font-bold truncate" style={{color:'var(--muted)'}}>Lean & Strong · @madvibe</div>
+            </div>
+          </div>
+          <div className="text-[11px] font-extrabold px-3 py-1.5 rounded-full shrink-0 whitespace-nowrap" style={{background:'#FBEFE6',color:'var(--clay-deep)'}}>🔥 {streak} day{streak===1?'':'s'}</div>
+        </div>
+      </div>
 
-                            <div className="space-y-6">
-                                <h4 className="font-semibold text-orange-300 text-xl">💪 Muscle Groups</h4>
-                                <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-                                    {Object.entries(data.muscleGroups).map(([muscleName, muscleData]) => (
-                                        <MuscleGroupCard
-                                            key={muscleName}
-                                            muscleName={muscleName}
-                                            muscleData={muscleData}
-                                            dayCompleted={isCompleted}
-                                            onMuscleComplete={handleMuscleGroupComplete}
-                                            onBreakTimerToggle={setIsBreakTimerActive}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
+      <div className="max-w-2xl mx-auto px-3.5 sm:px-4 pt-4 sm:pt-5">
+        {!loaded ? <div className="text-center py-20 font-bold" style={{color:'var(--muted)'}}>Loading your dashboard…</div> :
+         tab==="today" ? <TodayView today={today} data={todayData} progress={progress} toggle={toggle} resetDay={resetDay} onRest={onRest} streak={streak} weekCount={weekCount} quote={quote} weightLog={weightLog} addWeight={addWeight}/> :
+         tab==="plan" ? <PlanView progress={progress} toggle={toggle} resetDay={resetDay} onRest={onRest} today={today}/> :
+         tab==="eat" ? <NutritionView/> :
+         <TipsView/>}
+      </div>
 
-                            <div className="bg-gray-700 p-4 rounded-lg">
-                                <h4 className="font-semibold text-orange-300 mb-2">🧘 Cool-down (5 min)</h4>
-                                <p className="text-gray-300">{data.cooldown}</p>
-                            </div>
+      {/* footer credit */}
+      <div className="max-w-2xl mx-auto px-4 mt-8 text-center">
+        <p className="text-[12px] font-bold" style={{color:'var(--muted)'}}>Built with 💪 for <span className="grad-text font-black">MAD</span>han Kumar · Keep showing up.</p>
+      </div>
 
-                            <div className="flex justify-center">
-                                <button
-                                    onClick={() => setShowTimer(!showTimer)}
-                                    className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-colors duration-200 font-semibold"
-                                    disabled={isBreakTimerActive}
-                                >
-                                    {showTimer ? 'Hide Timer' : 'Show Timer'}
-                                </button>
-                            </div>
+      {/* bottom nav */}
+      <div className="fixed bottom-0 inset-x-0 z-40" style={{background:'rgba(250,248,243,.92)',backdropFilter:'blur(14px)',borderTop:'1px solid var(--line)'}}>
+        <div className="max-w-2xl mx-auto px-2 sm:px-3 pt-2 grid grid-cols-4 gap-1 bottom-safe">
+          {tabs.map(t=>(
+            <button key={t.k} onClick={()=>{setTab(t.k); window.scrollTo({top:0,behavior:'smooth'});}}
+              className="tab-btn flex flex-col items-center gap-0.5 py-2 rounded-2xl"
+              style={tab===t.k?{background:'#FBEFE6'}:{}}>
+              <span className="text-[19px]" style={{filter:tab===t.k?'none':'grayscale(.4) opacity(.65)'}}>{t.icon}</span>
+              <span className="text-[10.5px] font-black" style={{color:tab===t.k?'var(--clay-deep)':'var(--muted)'}}>{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-                            {showTimer && (
-                                <div className="mt-6">
-                                    <Timer 
-                                        duration={300}
-                                        onComplete={() => setShowTimer(false)}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            );
-        };
+      {rest && <RestTimer total={rest.secs} nextLabel={rest.label} onClose={()=>setRest(null)}/>}
+      {confetti && <Confetti/>}
+    </div>
+  );
+}
 
-        const App = () => {
-            const [completedDays, setCompletedDays] = useState({});
-            const [showConfetti, setShowConfetti] = useState(false);
-            const [currentQuote, setCurrentQuote] = useState(motivationalQuotes[0]);
+function Confetti(){
+  const colors=['#C96442','#E08A5B','#D98E45','#E2AC6A','#7F9270','#B0532F'];
+  const pieces=Array.from({length:60}).map((_,i)=>({
+    id:i, left:Math.random()*100, delay:Math.random()*1.2, dur:2+Math.random()*1.8,
+    c:colors[i%colors.length], w:6+Math.random()*6
+  }));
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[80] overflow-hidden">
+      {pieces.map(p=>(
+        <div key={p.id} className="conf" style={{left:`${p.left}%`,background:p.c,width:p.w,height:p.w*1.5,
+          animation:`fall ${p.dur}s ${p.delay}s linear forwards`}}/>
+      ))}
+    </div>
+  );
+}
 
-            useEffect(() => {
-                const quoteInterval = setInterval(() => {
-                    const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
-                    setCurrentQuote(motivationalQuotes[randomIndex]);
-                }, 10000);
-                return () => clearInterval(quoteInterval);
-            }, []);
-
-            const handleDayComplete = (day) => {
-                setCompletedDays(prev => ({
-                    ...prev,
-                    [day]: true
-                }));
-                setShowConfetti(true);
-                setTimeout(() => setShowConfetti(false), 3000);
-            };
-
-            return (
-                <div className="min-h-screen bg-gray-900">
-                    {showConfetti && <ConfettiAnimation />}
-                    
-                    <div className="hero-gradient py-16 text-center">
-                        <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4">
-                            Crush Your Goals Daily
-                        </h1>
-                        <p className="text-xl md:text-2xl text-white opacity-90 mb-8">
-                            {currentQuote}
-                        </p>
-                        <div className="max-w-3xl mx-auto bg-white bg-opacity-20 rounded-lg p-6 pulse-animation">
-                            <p className="text-lg text-white">
-                                Your ultimate fitness tracker for building strength at home with minimal equipment!
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="max-w-7xl mx-auto px-4 py-12">
-                        <div className="grid gap-8">
-                            {Object.entries(workoutPlan).map(([day, data]) => (
-                                <WorkoutDay
-                                    key={day}
-                                    day={day}
-                                    data={data}
-                                    isCompleted={completedDays[day] || false}
-                                    onComplete={handleDayComplete}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    <section className="py-16 bg-gray-800">
-                        <div className="container mx-auto px-6">
-                            <h2 className="text-4xl font-bold text-center text-white mb-12">
-                                <span className="text-orange-400">Key Notes</span> for Success
-                            </h2>
-                            
-                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                <div className="bg-gray-700 p-6 rounded-xl text-center card-hover">
-                                    <div className="text-4xl mb-4">📈</div>
-                                    <h3 className="font-bold text-orange-400 mb-2">Progression</h3>
-                                    <p className="text-gray-300">Increase reps (up to 20) or add a second set as strength improves. Maintain slow, controlled tempo.</p>
-                                </div>
-                                
-                                <div className="bg-gray-700 p-6 rounded-xl text-center card-hover">
-                                    <div className="text-4xl mb-4">🥗</div>
-                                    <h3 className="font-bold text-orange-400 mb-2">Nutrition</h3>
-                                    <p className="text-gray-300">Consume a calorie surplus with 1.6–2.2g/kg body weight in protein for muscle growth.</p>
-                                </div>
-                                
-                                <div className="bg-gray-700 p-6 rounded-xl text-center card-hover">
-                                    <div className="text-4xl mb-4">😴</div>
-                                    <h3 className="font-bold text-orange-400 mb-2">Rest</h3>
-                                    <p className="text-gray-300">Take Saturday/Sunday as rest days for recovery. Your muscles grow during rest!</p>
-                                </div>
-                                
-                                <div className="bg-gray-700 p-6 rounded-xl text-center card-hover">
-                                    <div className="text-4xl mb-4">🎯</div>
-                                    <h3 className="font-bold text-orange-400 mb-2">Form</h3>
-                                    <p className="text-gray-300">Prioritize proper form to prevent injury, especially with high-rep, light-weight exercises.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <footer className="bg-gray-800 py-8">
-                        <div className="max-w-7xl mx-auto px-4 text-center">
-                            <p className="text-gray-300">
-                                Made with 💪 by <span className="text-orange-400 font-bold">MAD</span>han Kumar | Keep pushing your limits!
-                            </p>
-                        </div>
-                    </footer>
-                </div>
-            );
-        };
-
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+ReactDOM.render(<App/>, document.getElementById('root'));
+</script>
 </body>
 </html>

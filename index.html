@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MADFIT">
+<meta name="application-name" content="MADFIT">
+<meta name="theme-color" content="#C96442">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="msapplication-TileColor" content="#C96442">
 <title>MADFIT — Lean & Strong</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js"></script>
@@ -838,6 +845,101 @@ function Confetti(){
 }
 
 ReactDOM.render(<App/>, document.getElementById('root'));
+</script>
+<script>
+(function(){
+  function createIcon(sz){
+    const c=document.createElement('canvas');
+    c.width=c.height=sz;
+    const ctx=c.getContext('2d');
+    const r=sz*0.22;
+
+    // Rounded square path
+    ctx.beginPath();
+    ctx.moveTo(r,0); ctx.lineTo(sz-r,0);
+    ctx.arc(sz-r,r,r,-Math.PI/2,0);
+    ctx.lineTo(sz,sz-r);
+    ctx.arc(sz-r,sz-r,r,0,Math.PI/2);
+    ctx.lineTo(r,sz);
+    ctx.arc(r,sz-r,r,Math.PI/2,Math.PI);
+    ctx.lineTo(0,r);
+    ctx.arc(r,r,r,Math.PI,-Math.PI/2);
+    ctx.closePath();
+
+    // Clay-to-amber gradient fill
+    const g=ctx.createLinearGradient(0,0,sz,sz);
+    g.addColorStop(0,'#CE6A47');
+    g.addColorStop(0.5,'#E08A5B');
+    g.addColorStop(1,'#DC9447');
+    ctx.fillStyle=g; ctx.fill();
+
+    // Inner radial glow (depth)
+    const gl=ctx.createRadialGradient(sz*.5,sz*.36,0,sz*.5,sz*.36,sz*.48);
+    gl.addColorStop(0,'rgba(255,255,255,.22)');
+    gl.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=gl;
+    ctx.beginPath(); ctx.arc(sz/2,sz*.36,sz*.48,0,2*Math.PI); ctx.fill();
+
+    // Bold "M" — primary letter
+    ctx.fillStyle='rgba(255,255,255,.97)';
+    ctx.textAlign='center';
+    ctx.textBaseline='alphabetic';
+    ctx.font='900 '+Math.round(sz*.56)+'px "Nunito Sans",system-ui,-apple-system,sans-serif';
+    ctx.fillText('M',sz/2,sz*.66);
+
+    // "FIT" sub-label
+    ctx.fillStyle='rgba(255,255,255,.70)';
+    ctx.font='800 '+Math.round(sz*.185)+'px "Nunito Sans",system-ui,-apple-system,sans-serif';
+    ctx.fillText('FIT',sz/2,sz*.85);
+
+    return c.toDataURL('image/png');
+  }
+
+  function boot(){
+    const i192=createIcon(192);
+    const i512=createIcon(512);
+    const i32 =createIcon(32);
+
+    // iOS "Add to Home Screen" icon
+    const al=document.createElement('link');
+    al.rel='apple-touch-icon'; al.sizes='192x192'; al.href=i192;
+    document.head.appendChild(al);
+
+    // Browser tab favicon
+    const fl=document.createElement('link');
+    fl.rel='icon'; fl.type='image/png'; fl.sizes='32x32'; fl.href=i32;
+    document.head.appendChild(fl);
+
+    // PWA web app manifest (blob URL — works on Android/Chrome)
+    const manifest={
+      name:'MADFIT — Lean & Strong',
+      short_name:'MADFIT',
+      description:'Personal fat-loss training dashboard by @madvibe',
+      start_url: location.pathname||'/',
+      scope: location.pathname||'/',
+      display:'standalone',
+      background_color:'#FAF8F3',
+      theme_color:'#C96442',
+      orientation:'portrait-primary',
+      categories:['health','fitness'],
+      icons:[
+        {src:i192,sizes:'192x192',type:'image/png',purpose:'any maskable'},
+        {src:i512,sizes:'512x512',type:'image/png',purpose:'any maskable'}
+      ]
+    };
+    const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+    const ml=document.createElement('link');
+    ml.rel='manifest'; ml.href=URL.createObjectURL(blob);
+    document.head.appendChild(ml);
+  }
+
+  // Wait for Nunito Sans to load so icon text renders crisp
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(boot).catch(boot);
+  } else {
+    window.addEventListener('load',boot);
+  }
+})();
 </script>
 </body>
 </html>
